@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Circle</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	
+	<link rel="stylesheet" href="css/main.css">
+	<script>
+		function initializeDND(){
+			// Events management on the draggable content
+			var draggableContent = document.querySelectorAll('#menu li');
+			[].forEach.call(draggableContent, function(e) {
+				e.addEventListener('dragstart', function handleDragStart(e) {
+					this.style.opacity = '0.4';  // this / e.target is the source node.
+					
+					e.dataTransfer.setData("text/plain", this.firstChild.firstChild.alt);
+					e.dataTransfer.setDragImage(this, this.offsetWidth/2, this.offsetHeight/2);
+					e.dataTransfer.effectAllowed = "copy";
+				}, false);
+				e.addEventListener('dragend', function(e){
+					this.style.opacity = '1';
+				}, false);
+			});
+			
+			// Events management on the droppable content
+			var droppableContent = document.querySelector('#content');
+			droppableContent.addEventListener('dragover', function(e){
+				if( e.dataTransfer.types.contains('text/plain') )
+					e.preventDefault();
+			}, false);
+			droppableContent.addEventListener('dragenter', function(e){
+				this.style.background = '#ccc';
+			}, false);
+			droppableContent.addEventListener('dragleave', function(e){
+				this.style.background = '#eee';
+			}, false);
+			droppableContent.addEventListener('drop', function(e){
+				this.innerHTML = e.dataTransfer.getData("text/plain");
+				this.style.background = '#eee';
+				
+				e.preventDefault();
+			}, false);
+			droppableContent.addEventListener('dragend', function(e){
+			}, false);
+		}
+	</script>
+</head>
+<body onload="initializeDND();">
+<div id="wrapper">
+	<div id="container">
+		<ul id="menu">
+			<li id="presentation" draggable="true"><a href="#" draggable="true"><img src="pic/suitcase-green.png" alt="Presentation"/></a></li>
+			<li id="work" draggable="true"><a href="#" draggable="true"><img src="pic/USB-green.png" alt="Work"/></a></li>
+			<li id="contact" draggable="true"><a href="#" draggable="true"><img src="pic/telephone-green.png" alt="Contact"/></a></li>
+		</ul>
+		<div id="content"></div>
+	</div>
+</div>
+</body>
+</html>
